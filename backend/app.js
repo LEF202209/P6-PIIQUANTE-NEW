@@ -8,6 +8,7 @@ require('dotenv').config();
 const express = require('express');
 
 const userRoutes=require('./routes/user');
+const sauceRoutes=require('./routes/sauce');
 
 // créer une application express
 const app = express();
@@ -36,6 +37,7 @@ mongoose.connect(`mongodb+srv://${userName}:${password}@${accessMongo}/OPENCLASS
 .catch(()=> console.log('Connexion à MongoDB échouée!'));
 
 app.use('/api/auth',userRoutes);
+app.use('/api/sauces',sauceRoutes);
 
 // exporter l'applicat° pour qu'on puisse y accéder depuis les autres fichiers notamment notre server node //
 module.exports = app;
