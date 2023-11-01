@@ -30,3 +30,11 @@ function getAllSauces  (req, res) {
   }
 
   module.exports =  {  createSauce, getAllSauces }
+
+function getOneSauce   (req, res) {
+    Sauce.findOne({ _id: req.params.id })
+      .then(thing => res.status(200).json(thing))
+      .catch(error => res.status(404).json({ error }));
+  }
+
+module.exports =  {  createSauce, getAllSauces, getOneSauce }
