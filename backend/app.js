@@ -7,6 +7,8 @@ require('dotenv').config();
 // importer express module
 const express = require('express');
 
+const userRoutes=require('./routes/user');
+
 // créer une application express
 const app = express();
 app.use(express.json());
@@ -29,10 +31,11 @@ app.use((req, res, next) => {
   });
 
 // se connecter à Mongoose
-mongoose.connect(`mongodb+srv://${userName}:${password}@${accessMongo}/OPENCLASSROOMS?retryWrites=true&w=majority`)
+mongoose.connect(`mongodb+srv://${userName}:${password}@${accessMongo}/OPENCLASSROOMS?retryWrites=true&w=majority`,{useNewUrlParser:true,useUnifiedTopology:true})
 .then(()=> console.log('Connexion à MongoDB réussie !'))
 .catch(()=> console.log('Connexion à MongoDB échouée!'));
 
+app.use('/api/auth',userRoutes);
 
 // exporter l'applicat° pour qu'on puisse y accéder depuis les autres fichiers notamment notre server node //
 module.exports = app;
