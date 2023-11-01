@@ -15,5 +15,7 @@ router.post('/',auth,multer,sauceCtrl.createSauce);
 router.get('/',auth,sauceCtrl.getAllSauces);
 // route Get récupération d'une sauce 
 router.get('/:id',auth,sauceCtrl.getOneSauce);
+// route Put modification d'une sauce 
+router.put('/:id',auth,multer,sauceCtrl.modifySauce);
 
 module.exports = router;
