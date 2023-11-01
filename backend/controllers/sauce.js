@@ -5,7 +5,7 @@
 const Sauce = require('../models/Sauce');
 
 
-exports.createSauce = (req, res, next) => {
+function createSauce (req, res)  {
     const sauceObject = JSON.parse(req.body.sauce)
     delete sauceObject._id;
     //ajout des informations du formulaire a partir du model sauce
@@ -22,3 +22,11 @@ exports.createSauce = (req, res, next) => {
       .then(() => res.status(201).json({ message: 'Sauce enregistrée !' }))
       .catch(error => res.status(400).json({ error }))
   }
+
+function getAllSauces  (req, res) {
+    Sauce.find()
+      .then(sauces => res.status(200).json(sauces))
+      .catch(error => res.statut(400).json({ error }))
+  }
+
+  module.exports =  {  createSauce, getAllSauces }

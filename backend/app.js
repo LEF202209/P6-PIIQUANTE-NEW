@@ -3,25 +3,22 @@
 //****************************************************************************************//
 //importation du module de variable d'environnement
 require('dotenv').config();
-
 // importer express module
 const express = require('express');
-
-const userRoutes=require('./routes/user');
-const sauceRoutes=require('./routes/sauce');
-
 // créer une application express
 const app = express();
 app.use(express.json());
-
 // importer mongoose
 const mongoose = require('mongoose');
-
+// importer des fichiers de routing user
+const userRoutes = require('./routes/user')
+// importer des fichiers de routing sauce
+const sauceRoutes = require('./routes/sauce')
+const path = require('path');
 // variables d'environnement
 const userName= process.env.DB_USERNAME
 const password = process.env.DB_PASSWORD
 const accessMongo = process.env.DB_ACCESSMONGO
-
 
 //  cors : déclaration des autorisations //
 app.use((req, res, next) => {
@@ -36,6 +33,7 @@ mongoose.connect(`mongodb+srv://${userName}:${password}@${accessMongo}/OPENCLASS
 .then(()=> console.log('Connexion à MongoDB réussie !'))
 .catch(()=> console.log('Connexion à MongoDB échouée!'));
 
+app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/api/auth',userRoutes);
 app.use('/api/sauces',sauceRoutes);
 

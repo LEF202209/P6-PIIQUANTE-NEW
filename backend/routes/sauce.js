@@ -9,7 +9,9 @@ const router = express.Router();
 
 const sauceCtrl = require('../controllers/sauce')
 
-// route création sauce
+// route Post création sauce
 router.post('/',auth,multer,sauceCtrl.createSauce);
+// route Get récupération de toutes les sauces 
+router.get('/',auth,sauceCtrl.getAllSauces);
 
 module.exports = router;
