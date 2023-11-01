@@ -17,5 +17,7 @@ router.get('/',auth,sauceCtrl.getAllSauces);
 router.get('/:id',auth,sauceCtrl.getOneSauce);
 // route Put modification d'une sauce 
 router.put('/:id',auth,multer,sauceCtrl.modifySauce);
+// route Delete pour suppression d'une sauce 
+router.delete('/:id',auth ,sauceCtrl.deleteSauce);
 
 module.exports = router;
