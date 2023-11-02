@@ -4,6 +4,8 @@
 
 const Sauce = require('../models/Sauce');
 const fs = require('fs');
+const xss = require('xss');
+var messageMAJ='';
 
 function createSauce (req, res)  {
     const sauceObject = JSON.parse(req.body.sauce)
@@ -11,7 +13,11 @@ function createSauce (req, res)  {
     //ajout des informations du formulaire a partir du model sauce
     const sauce = new Sauce({
       ...sauceObject,
-
+      userId: req.auth.userId,
+      name: xss(sauceObject.name),
+      manufacturer: xss(sauceObject.manufacturer),
+      description: xss(sauceObject.description),
+      mainPepper: xss(sauceObject.mainPepper),
       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
       likes: '0',
       dislikes: '0',
@@ -45,7 +51,13 @@ function getOneSauce   (req, res) {
         ...JSON.parse(req.body.sauce),
         imageUrl:`${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     }:
-    {...req.body};
+    {...(req.body)};
+    // Échapper chaque propriété de sauceObject
+     for (let key in sauceObject) {
+         if (typeof sauceObject[key] === 'string') {
+        sauceObject[key] = xss(sauceObject[key]);
+        }
+  }
     delete sauceObject._userId;
     Sauce.findOne ({_id:req.params.id})
     .then((sauce) =>{
