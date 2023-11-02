@@ -22,6 +22,8 @@ const accessMongo = process.env.DB_ACCESSMONGO
 
 // sécurité: paramètrage en-tête http
 const helmet = require('helmet') 
+// sécurité: empèche l'usage de caractères dans les saisies pour attaque par injection
+const mongoSanitize = require('express-mongo-sanitize') 
 
 //  cors : déclaration des autorisations //
 app.use((req, res, next) => {
@@ -39,6 +41,7 @@ mongoose.connect(`mongodb+srv://${userName}:${password}@${accessMongo}/OPENCLASS
 //ajout de modules de sécurité 
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy : "cross-origin" })) ;
+app.use(mongoSanitize());
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/api/auth',userRoutes);
