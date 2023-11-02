@@ -93,4 +93,75 @@ function deleteSauce (req,res){
     }})
 }
 
-module.exports =  {  createSauce, getAllSauces, getOneSauce, modifySauce, deleteSauce }
+function likeSauce (req,res){
+    const userId = req.body.userId;
+    const like = req.body.like;
+    
+    Sauce.findOne ({_id:req.params.id})
+    .then((sauce) =>{
+
+        if (!sauce){
+            res.status(404).json({message:'sauce inexistante!'})
+        }
+        else {
+            const userLiked = sauce.usersLiked.includes(userId);
+            const userDisliked = sauce.usersDisliked.includes(userId);
+            var update = {};
+            switch (like) {
+                // liker la sauce
+                case 1 : {
+                    if (!userLiked && !userDisliked) {
+                        update.$inc = {likes:1};
+                        update.$push ={usersLiked:userId};
+                        messageMAJ='Like ajouté !'
+                    }
+                    else {
+                        res.status(403).json({message:'Double vote interdit!'});
+                    }
+                }
+                break;
+                // disliker la sauce
+                case -1 : {
+                    if (!userLiked && !userDisliked) {
+                        update.$inc = {dislikes:1};
+                        update.$push ={usersDisliked:userId};
+                        messageMAJ='Dislike ajouté !'
+                    }
+                    else {
+                        res.status(403).json({message:'Double vote interdit!'});
+                    }
+                }
+                break;
+                // annuler son choix
+                case 0 : {
+                    if (userLiked) {
+                        update.$inc = {likes:-1};
+                        update.$pull ={usersLiked:userId};
+                        messageMAJ='Like supprimé !'
+                    }
+                    else if (userDisliked) {
+                        update.$inc = {dislikes:-1};
+                        update.$pull ={usersDisliked:userId};
+                        messageMAJ='Dislike supprimé !'
+                    } else{
+                        res.status(400).json({message:'Action invalide !'});   
+                    }
+                }
+                break;
+                // valeur like reçue invalide
+                default:
+                    res.status(400).json({message:`la valeur like ${like} n'est pas valide !`})
+            }
+            if (update.$pull || update.$push || update.$inc){
+            Sauce.updateOne({_id:req.params.id},update)
+            .then(() => {
+                res.status(200).json({message:`$messageMAJ`})
+            })
+            .catch(error => res.status(400).json({error}))
+            }
+        }
+    })
+    .catch(error => res.status(400).json({error}))
+  }
+
+  module.exports =  {  createSauce, getAllSauces, getOneSauce, modifySauce, deleteSauce,likeSauce }
