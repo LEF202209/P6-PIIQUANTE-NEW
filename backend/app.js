@@ -20,6 +20,9 @@ const userName= process.env.DB_USERNAME
 const password = process.env.DB_PASSWORD
 const accessMongo = process.env.DB_ACCESSMONGO
 
+// sécurité: paramètrage en-tête http
+const helmet = require('helmet') 
+
 //  cors : déclaration des autorisations //
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -32,6 +35,10 @@ app.use((req, res, next) => {
 mongoose.connect(`mongodb+srv://${userName}:${password}@${accessMongo}/OPENCLASSROOMS?retryWrites=true&w=majority`,{useNewUrlParser:true,useUnifiedTopology:true})
 .then(()=> console.log('Connexion à MongoDB réussie !'))
 .catch(()=> console.log('Connexion à MongoDB échouée!'));
+
+//ajout de modules de sécurité 
+app.use(helmet());
+app.use(helmet.crossOriginResourcePolicy({ policy : "cross-origin" })) ;
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/api/auth',userRoutes);
