@@ -10,6 +10,7 @@ const keyToken = process.env.KEY_TOKEN
 
 //fonction de création d'un compte
 exports.signup = (req, res) => {
+    console.log('en signup');
     bcrypt.hash(req.body.password, 10)
         .then(hash => {
             const user = new User ({
